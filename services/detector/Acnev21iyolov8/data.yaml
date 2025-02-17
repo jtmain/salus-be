@@ -1,0 +1,9 @@
+path: C:\Users\jtmai\dev\ScienceFair2025\acne-detection\fast\services\detector\Acne.v21i.yolov8\data
+train: C:\Users\jtmai\dev\ScienceFair2025\acne-detection\fast\services\detector\Acnev21iyolov8\data\train\images
+val: C:\Users\jtmai\dev\ScienceFair2025\acne-detection\fast\services\detector\Acnev21iyolov8\data\valid\images
+test: C:\Users\jtmai\dev\ScienceFair2025\acne-detection\fast\services\detector\Acnev21iyolov8\data\test\images
+
+# these are the names and the various classes
+nc: 6
+names: ['blackheads', 'dark spot', 'nodules', 'papules', 'pustules', 'whiteheads']
+
