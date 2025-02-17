@@ -4,7 +4,8 @@ import os
 
 class AskTheDoc:
     def __init__(self):
-        self.client = OpenAI(api_key="key")  
+        self.key = os.environ["API_KEY"]
+        self.client = OpenAI(base_url="https://openrouter.ai/api/v1",api_key="key")  
 
     def ask(self, user_message, lesion_count, image_path):
         
@@ -14,7 +15,7 @@ class AskTheDoc:
         print(f"Sending to OpenAI, User Text: {user_message}, Lesion Count: {lesion_count}, Image Path: {image_path}")
 
         response = self.client.chat.completions.create(
-            model="gpt-4",
+            model="openai/gpt-4o-2024-11-20",
             messages=[
                 {"role": "system", "content": "You are a skincare and dermatology specialist."},
                 {"role": "user", "content": f"User details: {user_message}. Detected {lesion_count} lesions/pimples."},
