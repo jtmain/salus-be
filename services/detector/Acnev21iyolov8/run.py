@@ -17,16 +17,21 @@ class YOLOImageProcessor:
         return YOLO(self.model_path)
 
     def process_image(self, image):
-
+        print("Here")
         results = self.model(image)[0]  
+        print("Here 1")
         acne_counts = defaultdict(int) 
-
+        print("Here 2")
         for result in results.boxes.data.tolist():
+            print("Here 3")
             x1, y1, x2, y2, score, class_id = result
             if score > self.confidence_threshold:
-                class_name = self.model.names.get[int(class_id), "unkown type"]  
+                print("Here.4")
+                class_name = self.model.names.get(int(class_id), "unkown type" ) 
+                print("Here 5")
                 acne_counts[class_name] += 1  
                 self._draw_bounding_box(image, x1, y1, x2, y2, score, class_id)
+                print("Here 6")
 
         return image, dict(acne_counts)  
 

@@ -49,7 +49,9 @@ async def upload_image(image: UploadFile = File(...), skinfo: str = Form(...)):
         if image is None:
             raise HTTPException(status_code=400, detail="Invalid image format.")
 
+        print("here")
         processed_image, acne_counts = processor.process_image(image)
+        print("erere")
 
         if not acne_counts:
             acne_counts = {"message": "No lesions detected"}
