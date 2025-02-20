@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from services.detector.Acnev21iyolov8.run import YOLOImageProcessor
 from services.AI.agent import AskTheDoc
 import base64 
+import uvicorn
 
 
 BASE_URL = os.getenv("SERVER_URL", "http://127.0.0.1:8000")
@@ -102,3 +103,6 @@ async def upload_image(image: UploadFile = File(...), skinfo: str = Form(...)):
     except Exception as e:
         print(f"❌ General Error: {str(e)}")
         return JSONResponse(content={"error": "An unexpected error occurred."}, status_code=500)
+
+if __name__ == "__main__":
+    uvicorn.run("app:app", host="0.0.0.0", port=8000)
