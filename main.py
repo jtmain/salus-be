@@ -88,7 +88,6 @@ async def upload_image(image: UploadFile = File(...), skinfo: str = Form(...)):
             image_blob = response_image_file.read()
 
         encoded_image = base64.b64encode(image_blob).decode('utf-8')
-        print("encoded_image = ",encoded_image)
 
         send_response = {
             "message": "Image processed successfully!",
