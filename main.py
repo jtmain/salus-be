@@ -88,12 +88,16 @@ async def upload_image(image: UploadFile = File(...), skinfo: str = Form(...)):
 
         encoded_image = base64.b64encode(image_blob).decode('utf-8')
 
-        return JSONResponse(content={
+        send_response = JSONResponse(content={
             "message": "Image processed successfully!",
             "acne_counts": acne_counts, 
             "ai_response": GPT_response,
             "response_image": encoded_image
         })
+
+        print(send_response)
+
+        return send_response
 
         
 
