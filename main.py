@@ -11,7 +11,7 @@ import base64
 import uvicorn
 
 
-BASE_URL = os.getenv("SERVER_URL", "http://127.0.0.1:8000")
+BASE_URL = os.getenv("SERVER_URL", "http://127.0.0.1:8080")
 
 app = FastAPI()
 
@@ -105,4 +105,4 @@ async def upload_image(image: UploadFile = File(...), skinfo: str = Form(...)):
         return JSONResponse(content={"error": "An unexpected error occurred."}, status_code=500)
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0", port=8000)
+    uvicorn.run("app:app", host="0.0.0.0", port=8080)
