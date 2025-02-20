@@ -1,22 +1,37 @@
-# Use an official lightweight Python image
-FROM python:3.10-slim
-
-# Set a working directory
+# Builder stage: Install dependencies in a virtual environment
+FROM python:3.10-slim AS builder
 WORKDIR /app
 
-# Upgrade pip and install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install build tools if needed (optional)
+RUN apt-get update && apt-get install -y build-essential
 
-# Copy the rest of your application code
+# Copy only requirements first
+COPY requirements.txt .
+
+# Create a virtual environment and install dependencies
+RUN python -m venv /venv && \
+    /venv/bin/pip install --upgrade pip && \
+    /venv/bin/pip install --no-cache-dir -r requirements.txt
+
+# Copy application code (if needed during build, for compiling extensions etc.)
 COPY . .
 
-# Expose the port your app runs on. DigitalOcean sets a PORT env variable.
+# Runtime stage: Use a minimal image and copy over the virtual environment
+FROM python:3.10-slim
+WORKDIR /app
+
+# Install runtime libraries (like libGL for OpenCV)
+RUN apt-get update && apt-get install -y libgl1-mesa-glx && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy the virtual environment from the builder stage
+COPY --from=builder /venv /venv
+
+# Copy the application code
+COPY . .
+
+# Update PATH to use the virtual environment
+ENV PATH="/venv/bin:$PATH"
+
 EXPOSE 8000
-
-# Run the FastAPI app using uvicorn. Use the PORT env variable if provided.
-CMD exec uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}
-
-
-# docker build -t my-fastapi-app .
-# docker run -p 8000:8000 my-fastapi-app
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
