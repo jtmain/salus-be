@@ -74,7 +74,7 @@ class AskTheDoc:
                 temperature=0.7
             )
 
-            
+            print(response.choices[0].message.content)
             return response.choices[0].message.content
             print("LLM response = ",response.choices[0].message.content)
 

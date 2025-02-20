@@ -74,6 +74,7 @@ async def upload_image(image: UploadFile = File(...), skinfo: str = Form(...)):
         try:
             print("📡 Sending Base64 Image to OpenRouter...")
             GPT_response = AI.ask(skinfo, acne_counts, output_path)
+            print("GPT_response = ",GPT_response)
 
             if not GPT_response:  
                 GPT_response = "No AI response received."
@@ -87,15 +88,16 @@ async def upload_image(image: UploadFile = File(...), skinfo: str = Form(...)):
             image_blob = response_image_file.read()
 
         encoded_image = base64.b64encode(image_blob).decode('utf-8')
+        print("encoded_image = ",encoded_image)
 
-        send_response = JSONResponse(content={
+        send_response = {
             "message": "Image processed successfully!",
             "acne_counts": acne_counts, 
             "ai_response": GPT_response,
             "response_image": encoded_image
-        })
+        }
 
-        print(send_response)
+        print("send_response = ",send_response)
 
         return send_response
 
