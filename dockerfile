@@ -4,9 +4,6 @@ FROM python:3.10-slim
 # Set a working directory
 WORKDIR /app
 
-# Copy only requirements first to leverage Docker cache
-COPY requirements.txt .
-
 # Upgrade pip and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
