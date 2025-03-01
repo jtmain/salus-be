@@ -35,20 +35,34 @@ class YOLOImageProcessor:
 
         return image, dict(acne_counts)  
 
-    def _draw_bounding_box(self, image, x1, y1, x2, y2, score, class_id):
-        try:
+        def _draw_bounding_box(self, image, x1, y1, x2, y2, score, class_id):
+            try:
+                x1, y1, x2, y2 = map(int, [x1, y1, x2, y2])
+                height, width, _ = image.shape
 
-            x1, y1, x2, y2 = map(int, [x1, y1, x2, y2])
+                if x1 < 0 or y1 < 0 or x2 > width or y2 > height:
+                    print(f" Skipping invalid bounding box: ({x1}, {y1}, {x2}, {y2})")
+                    return 
 
-            height, width, _ = image.shape
+                # Define class-specific colors
+                class_colors = {
+                    0: (0, 255, 0),   # Green for class 0
+                    1: (255, 0, 0),   # Blue for class 1
+                    2: (0, 0, 255),   # Red for class 2
+                    3: (255, 255, 0)  # Yellow for class 3
+                }
 
-            if x1 < 0 or y1 < 0 or x2 > width or y2 > height:
-                print(f" Skipping invalid bounding box: ({x1}, {y1}, {x2}, {y2})")
-                return 
+                # Get the color for the detected class, default to white if not found
+                color = class_colors.get(int(class_id), (255, 255, 255))
 
-            cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-            label = f"{self.model.names[int(class_id)]} {score:.2f}"
-            cv2.putText(image, label, (x1, max(y1 - 10, 10)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                # Draw the bounding box
+                cv2.rectangle(image, (int(x1), int(y1)), (int(x2, y2)), color, 2)
+                
+                # Label text
+                label = f"{self.model.names[int(class_id)]} {score:.2f}"
+                cv2.putText(image, label, (x1, max(y1 - 10, 10)), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-        except Exception as e:
-            print(f"Error drawing bounding box: {e}")
+            except Exception as e:
+                print(f"Error drawing bounding box: {e}")
+
