@@ -110,4 +110,5 @@ async def upload_image(image: UploadFile = File(...), skinfo: str = Form(...)):
         return JSONResponse(content={"error": "An unexpected error occurred."}, status_code=500)
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0", port=8080)
+    uvicorn.run("main:app", host="0.0.0.0", port=8080)
+
