@@ -29,7 +29,7 @@ app.add_middleware(
 
 processor = YOLOImageProcessor(
     model_path="./services/detector/Acnev21iyolov8/runs/acne_exp_optimized/exp_final/weights/best.pt",
-    confidence_threshold=0
+    confidence_threshold=0.3
 )
 
 AI = AskTheDoc()
