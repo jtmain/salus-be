@@ -8,6 +8,7 @@ class YOLOImageProcessor:
 
         self.model_path = model_path
         self.confidence_threshold = confidence_threshold
+        self.cancer_threshold = 0.8
         # Load first model (acne detector)
         self.model = self._load_model(self.model_path)
         # Load second model (skin cancer detector)
@@ -41,7 +42,7 @@ class YOLOImageProcessor:
         boxes2 = []
         for result in results2.boxes.data.tolist():
             x1, y1, x2, y2, score, class_id = result
-            if score > self.confidence_threshold:
+            if score > self.cancer_threshold:
                 class_name = self.model2.names.get(int(class_id), "unknown type")
                 counts2[class_name] += 1
                 boxes2.append((x1, y1, x2, y2, score, class_id))
@@ -62,6 +63,28 @@ class YOLOImageProcessor:
             self.draw_bounding_box(final_image, x1, y1, x2, y2, score, class_id, use_pastel=True)
 
         return final_image, dict(merged_counts)
+
+
+    def process_only_cancer(self, image):
+        # Process with Model 2 (Skin cancer detector)
+
+        final_image = image.copy()
+        
+        results2 = self.model2(image)[0]
+        counts2 = defaultdict(int)
+        boxes2 = []
+        for result in results2.boxes.data.tolist():
+            x1, y1, x2, y2, score, class_id = result
+            if score > self.cancer_threshold:
+                class_name = self.model2.names.get(int(class_id), "unknown type")
+                counts2[class_name] += 1
+                boxes2.append((x1, y1, x2, y2, score, class_id))
+
+        # Draw boxes for Model 2 (Skin cancer detector) using pastel colors.
+        for (x1, y1, x2, y2, score, class_id) in boxes2:
+            self.draw_bounding_box(final_image, x1, y1, x2, y2, score, class_id, use_pastel=True)
+
+        return final_image, dict(counts2)
 
     def draw_bounding_box(self, image, x1, y1, x2, y2, score, class_id, use_pastel=False, color_override=None):
 
