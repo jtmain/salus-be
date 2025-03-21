@@ -8,7 +8,7 @@ class YOLOImageProcessor:
 
         self.model_path = model_path
         self.confidence_threshold = confidence_threshold
-        self.cancer_threshold = 0.8
+        self.cancer_threshold = 0.65
         # Load first model (acne detector)
         self.model = self._load_model(self.model_path)
         # Load second model (skin cancer detector)
